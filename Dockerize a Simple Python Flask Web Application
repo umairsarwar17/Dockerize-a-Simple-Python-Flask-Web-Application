@@ -1,0 +1,106 @@
+Step-by-Step Guide to Dockerize a Simple Python Flask Web Application
+This guide will walk you through creating a simple Python Flask web application, Dockerizing it, and displaying it in a web browser.
+
+Step 1: Set Up Your Project
+Create a project directory:
+
+
+
+```
+mkdir flask-docker-app
+cd flask-docker-app
+```
+Create the required files: Inside the flask-docker-app directory, create the following files:
+
+`app.py (Your Flask application)
+requirements.txt (Dependencies for the application)
+Dockerfile (To define your Docker image)`
+
+
+Step 2: Write Your Flask Application
+```
+Create app.py:
+nano app.py
+Add the following code:
+
+from flask import Flask
+
+app = Flask(_name_)
+
+@app.route('/')
+def home():
+    return '<h1>Hello, Dockerized Flask App!</h1>'
+
+if _name_ == '_main_':
+    app.run(host='0.0.0.0', port=5000)
+
+
+```
+Step 3: Specify Dependencies
+
+Create and edit requirements.txt:
+
+```
+nano requirements.txt
+Add Flask to the file:
+flask
+```
+
+Step 4: Write the Dockerfile
+
+```
+# Use an official Python runtime as a parent image
+FROM python:3.9-slim-buster
+
+# Set the working directory in the container
+WORKDIR /app
+
+# Copy the dependencies file to the working directory
+COPY requirements.txt .
+
+# Install any dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy the current directory contents into the container at /app
+COPY . .
+
+# Make port 5000 available to the world outside this container
+EXPOSE 5000
+
+# Run the application
+CMD ["python", "app.py"]
+```
+
+Step 5: Build the Docker Image
+Run the following command to build the Docker image:
+
+```
+sudo docker build -t flask-docker-app .
+```
+
+Step 6: Run the Docker Container
+Run the container and map the internal port 5000 to the external port 5000:
+```
+sudo docker run -d -p 5000:5000 flask-docker-app
+```
+
+Step 7: Check the Running Container
+Verify the container is running:
+```
+sudo docker ps
+```
+Step 8: Access the Application in the Browser
+If running on your local machine, open your browser and go to:
+http://localhost:5000
+If running on a remote server (e.g., AWS EC2):
+
+Ensure port 5000 is open in your Security Group (Inbound Rules).
+
+http://<your-ec2-public-ip>:5000
+Replace <your-ec2-public-ip> with your instance's public IP.
+Expected Output in Browser
+When you visit the URL, you should see:
+
+`
+Hello, Dockerized Flask App!
+`
